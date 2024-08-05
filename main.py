@@ -5,21 +5,18 @@ def main():
 
     # Escaneo SYN
     syn_results = syn_scan.scan(target)
+    
+    # Mostrar resultados del escaneo SYN
+    print("Puertos escaneados:")
+    for result in syn_results:
+        print(result)
 
-    # Detección de SO
-    os_info = os_detection.detect_os(target)
-
-    # Detección de versiones de servicios
-    services = service_detection.detect_services(syn_results)
-
-    # Detección de Firewalls/IDS
-    firewall_info = firewall_detection.detect_firewall(target)
-
-    # Análisis de vulnerabilidades
-    vulnerabilities = vulnerability_analysis.analyze_vulnerabilities(services)
-
-    # Generación de informes
-    report_generation.generate_report(target, syn_results, os_info, services, firewall_info, vulnerabilities)
+    # Puedes continuar con otras funciones aquí
+    # os_info = os_detection.detect_os(target)
+    # services = service_detection.detect_services(syn_results)
+    # firewall_info = firewall_detection.detect_firewall(target)
+    # vulnerabilities = vulnerability_analysis.analyze_vulnerabilities(services)
+    # report_generation.generate_report(target, syn_results, os_info, services, firewall_info, vulnerabilities)
 
 if __name__ == "__main__":
     main()
