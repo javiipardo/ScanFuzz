@@ -1,10 +1,10 @@
-from scanner import syn_scan, os_detection, service_detection, firewall_detection, vulnerability_analysis, report_generation
+from scanner import scan_port, scan, os_detection, service_detection, firewall_detection, vulnerability_analysis, report_generation
 
 def main():
     target = input("Ingrese la dirección IP objetivo: ")
 
     # Escaneo SYN
-    syn_results = syn_scan.scan(target)
+    syn_results = scan.scan(target)
     
     # Mostrar resultados del escaneo SYN
     print("Puertos escaneados:")
