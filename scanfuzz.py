@@ -19,6 +19,23 @@ def escanear_puerto_syn(host, puerto, timeout=1):
             return puerto
     return None
 
+def obtener_os(host):
+    # Enviar un paquete TCP SYN
+    paquete = IP(dst=host) / TCP(dport=80, flags="S")
+    respuesta = sr1(paquete, timeout=2, verbose=0)
+
+    if respuesta and respuesta.haslayer(TCP):
+        ttl = respuesta[IP].ttl
+        window_size = respuesta[TCP].window
+
+        if ttl <= 64:
+            return "Linux"
+        elif ttl <= 128:
+            return "Windows"
+        else:
+            return "Desconocido"
+    return "No se pudo detectar el OS"
+
 def obtener_servicio(puerto):
     try:
         return socket.getservbyport(puerto)
@@ -90,15 +107,19 @@ def main():
     parser.add_argument("-p", "--puertos", type=str, default="80,443,22,21,8080,3306", help="Lista de puertos a escanear o -p- para todos los puertos")
     parser.add_argument("-w", "--wordlist", type=str, default="wordlist.txt", help="Lista de palabras para fuzzing")
     args = parser.parse_args()
-    
+
     if args.puertos == "-":
         args.puertos = list(range(1, 65536))  # Escanear todos los puertos
     else:
         args.puertos = [int(p) for p in args.puertos.split(",")]
-    
+
     init(autoreset=True)  # Inicializar colorama
 
-    puertos_abiertos = escanear_puertos_syn(args.host, args.puertos)  # Cambio a escaneo sigiloso
+    puertos_abiertos = escanear_puertos_syn(args.host, args.puertos)
+
+    # Detectar el sistema operativo
+    os_detectado = obtener_os(args.host)
+    print(Fore.YELLOW + f"[*] Sistema operativo detectado: {os_detectado}" + Style.RESET_ALL)
 
     fuzz_results = []
     if 80 in puertos_abiertos or 443 in puertos_abiertos:
@@ -109,7 +130,7 @@ def main():
             fuzz_results = asyncio.run(fuzzing(url, wordlist))
         except FileNotFoundError:
             print("[!] No se encontró el archivo de wordlist.")
-    
+
     guardar_resultados(args.host, puertos_abiertos, fuzz_results)
 
 if __name__ == "__main__":
