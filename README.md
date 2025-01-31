@@ -1,87 +1,122 @@
-# PortRanger
 
-PortRanger es una herramienta avanzada de escaneo de puertos diseñada para identificar puertos abiertos, detectar servicios y versiones, y analizar posibles vulnerabilidades en los sistemas objetivo. Esta herramienta es ideal para profesionales de ciberseguridad, administradores de sistemas y cualquier persona interesada en evaluar la seguridad de su infraestructura de red.
+# ScanFuzz
 
-## Funcionalidades
+ScanFuzz es una herramienta de escaneo de puertos y fuzzing diseñada para entornos de CTF (Capture The Flag) y pruebas de seguridad. Combina técnicas de escaneo sigiloso (SYN scan) con fuzzing de directorios y subdominios para descubrir puertos abiertos, servicios y rutas ocultas en servidores web.
 
-### Características Básicas
-- **Escaneo SYN**: Detecta puertos abiertos utilizando un escaneo SYN rápido y eficiente.
-- **Escaneo de Puertos Comunes**: Incluye una lista predefinida de puertos comunes para un escaneo rápido.
-- **Escaneo Completo**: Capacidad para escanear todos los puertos (1-65535).
+## Características Principales
 
-### Características Avanzadas
-- **Detección de Sistema Operativo**: Identifica el sistema operativo del host utilizando técnicas de fingerprinting.
-- **Detección de Versiones de Servicios**: Obtiene información detallada sobre las versiones de los servicios en los puertos abiertos.
-- **Escaneo Personalizado**: Permite al usuario especificar un rango de puertos o una lista personalizada.
+### 1. Escaneo Sigiloso de Puertos (SYN Scan)
+🔍 Escanea puertos TCP utilizando la técnica de escaneo SYN (Half-Open Scan), que es más sigilosa que un escaneo completo.
+- Soporta escaneo de un rango de puertos personalizado o una lista específica de puertos.
+- Detecta puertos abiertos y muestra el servicio asociado a cada puerto (si está disponible).
 
-### Funciones Innovadoras
-- **Detección de Firewall/IDS**: Implementa técnicas para detectar la presencia de firewalls o sistemas de detección de intrusos (IDS).
-- **Paralelización**: Utiliza hilos o procesos para acelerar el escaneo mediante la ejecución en paralelo.
-- **Modo Stealth**: Implementa técnicas de evasión para evitar ser detectado por sistemas de seguridad (e.g., escaneo lento, fragmentación de paquetes).
-- **Análisis de Vulnerabilidades**: Integra con bases de datos de vulnerabilidades (como CVE) para identificar potenciales riesgos asociados con los servicios detectados.
-- **Generación de Informes**: Crea informes detallados y personalizables sobre los resultados del escaneo, incluyendo gráficos y estadísticas.
+### 2. Fuzzing de Directorios
+💻 Realiza fuzzing de directorios en servidores web para descubrir rutas ocultas o archivos sensibles.
+- Utiliza una lista de palabras (wordlist) para probar múltiples rutas.
+- Soporta múltiples conexiones concurrentes para acelerar el proceso.
 
-## Plazos de Desarrollo
+### 3. Detección de Sistemas Operativos
+🖥️ Detecta el sistema operativo del host remoto basándose en las respuestas TCP/IP.
+- Analiza el TTL (Time to Live) y el tamaño de la ventana TCP para inferir el sistema operativo.
 
-### Agosto: Preparación y Planificación
+### 4. Exportación de Resultados
+📊 Guarda los resultados del escaneo y el fuzzing en un archivo JSON para su posterior análisis.
+- Los resultados incluyen puertos abiertos, servicios detectados, rutas descubiertas y el sistema operativo inferido.
 
-**Semana 1 (1-7 de agosto)**:
-- Investigación y recopilación de información sobre técnicas de escaneo de puertos.
-- Creación del repositorio en GitHub.
-- Definición de requisitos y objetivos del proyecto.
-
-**Semana 2 (8-14 de agosto)**:
-- Estructuración del proyecto (archivos README, estructura de carpetas).
-- Recolección de recursos y herramientas necesarias.
-
-### Septiembre: Desarrollo
-
-**Semana 3-4 (15-31 de agosto)**:
-- Implementación del escaneo SYN y de puertos comunes.
-- Documentación del progreso en GitHub (commits regulares, issues, pull requests).
-
-**Semana 1-2 (1-14 de septiembre)**:
-- Implementación del escaneo completo.
-- Añadir funcionalidad de escaneo personalizado.
-
-**Semana 3-4 (15-30 de septiembre)**:
-- Desarrollo de la detección de sistema operativo y versiones de servicios.
-- Pruebas y ajustes de las características básicas y avanzadas.
-
-### Octubre: Finalización y Publicación
-
-**Semana 1-2 (1-14 de octubre)**:
-- Implementación de la detección de firewall/IDS y paralelización.
-- Añadir el modo Stealth.
-
-**Semana 3-4 (15-31 de octubre)**:
-- Desarrollo del análisis de vulnerabilidades y generación de informes.
-- Pruebas exhaustivas y ajustes finales.
-
-### Noviembre: Documentación y Promoción
-
-**Semana 1 (1-7 de noviembre)**:
-- Documentación completa y detallada en el `README.md`.
-- Preparación para la publicación (creación de una release en GitHub).
-
-**Semana 2 (8-14 de noviembre)**:
-- Publicación de la versión 1.0 en GitHub.
-- Promoción del proyecto en redes sociales y foros de ciberseguridad.
-- Recopilación de feedback y sugerencias de la comunidad.
-
-## Contribuciones
-
-¡Las contribuciones son bienvenidas! Si deseas contribuir a PortRanger, por favor sigue estos pasos:
-1. Haz un fork del repositorio.
-2. Crea una nueva rama (`git checkout -b feature/nueva-funcionalidad`).
-3. Realiza tus cambios y haz commits descriptivos (`git commit -m 'Añadir nueva funcionalidad'`).
-4. Envía tus cambios (`git push origin feature/nueva-funcionalidad`).
-5. Abre un Pull Request.
-
-## Licencia
-
-Este proyecto está licenciado bajo la Licencia MIT - consulta el archivo [LICENSE](LICENSE) para más detalles.
+### 5. Fácil de Usar
+🛠️ Interfaz de línea de comandos (CLI) intuitiva con opciones personalizables.
+- Soporta colores en la terminal para una mejor visualización de los resultados.
 
 ---
 
-¡Gracias por usar PortRanger! Si tienes alguna pregunta o sugerencia, no dudes en abrir un issue o contactar conmigo.
+## Instalación
+
+### Requisitos
+- Python 3.7 o superior.
+- Librerías requeridas: `scapy`, `colorama`, `aiohttp`, `asyncio`.
+
+### Instalación de Dependencias
+Puedes instalar las dependencias necesarias usando pip:
+
+```bash
+pip install scapy colorama aiohttp
+```
+
+### Clonar el Repositorio
+```bash
+git clone https://github.com/tuusuario/scanfuzz.git
+cd scanfuzz
+```
+
+---
+
+## Uso
+
+### Escaneo de Puertos
+Para escanear puertos en un host específico:
+
+```bash
+./scanfuzz.py <host> -p <puertos>
+```
+
+- `<host>`: IP o dominio del objetivo.
+- `-p <puertos>`: Lista de puertos a escanear (por defecto: 80,443,22,21,8080,3306). Usa `-p-` para escanear todos los puertos (1-65535).
+
+**Ejemplo:**
+
+```bash
+./scanfuzz.py 192.168.1.1 -p 80,443,8080
+```
+
+### Fuzzing de Directorios
+Si se detecta un servidor web (puerto 80 o 443), la herramienta realiza automáticamente fuzzing de directorios usando una wordlist.
+
+```bash
+./scanfuzz.py 192.168.1.1 -p 80 -w wordlist.txt
+```
+
+- `-w <wordlist>`: Ruta al archivo de wordlist (por defecto: `wordlist.txt`).
+
+### Detección de Sistemas Operativos
+La herramienta detecta automáticamente el sistema operativo del host remoto después del escaneo de puertos.
+
+---
+
+## Ejemplo de Salida
+
+```plaintext
+[*] Escaneando puertos sigilosamente en 192.168.1.1...
+[+] Puerto abierto: 80 (http)
+[+] Puerto abierto: 443 (https)
+[*] Sistema operativo detectado: Linux (Kernel 2.4/2.6)
+[*] Fuzzing en http://192.168.1.1
+[+] http://192.168.1.1/admin - Código: 200
+[+] http://192.168.1.1/backup - Código: 403
+[*] Resultados guardados en 192.168.1.1_resultados.json
+```
+
+---
+
+## Archivo de Resultados (JSON)
+
+Los resultados se guardan en un archivo JSON con el siguiente formato:
+
+```json
+{
+  "host": "192.168.1.1",
+  "puertos_abiertos": [80, 443],
+  "servicios": {
+    "80": "http",
+    "443": "https"
+  },
+  "sistema_operativo": "Linux (Kernel 2.4/2.6)",
+  "fuzzing": [
+    {"url": "http://192.168.1.1/admin", "status": 200},
+    {"url": "http://192.168.1.1/backup", "status": 403}
+  ]
+}
+```
+
+---
+
+¡Gracias por usar ScanFuzz! 🚀
