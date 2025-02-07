@@ -199,9 +199,9 @@ def main():
     parser.add_argument("--filtered", action="store_true", help="Mostrar solo puertos filtrados")
     parser.add_argument("-w", "--wordlist", type=str, default="rockyou.txt", help="Lista de palabras para fuzzing")
     parser.add_argument("--status-code", type=int, help="Filtrar fuzzing por código de respuesta HTTP")
-    parser.add_argument("-t", "--threads", type=int, default=5, help="Número máximo de hilos para el escaneo (máximo 10)")
+    parser.add_argument("-t", "--threads", type=int, default=5, help="Número máximo de hilos para el escaneo (máximo 10)", choices=range(1, 11))
     parser.add_argument("-b", "--block-size", type=int, default=100, help="Tamaño del bloque para procesar la wordlist")
-    parser.add_argument("--min-rate", type=int, default=25, help="Velocidad mínima de envío de paquetes por segundo")
+    parser.add_argument("--min-rate", type=int, default=25, help="Velocidad mínima de envío de paquetes por segundo", choices=range(1, 5001))
     parser.add_argument("--no-dns", action="store_true", help="No realizar resolución DNS")
     args = parser.parse_args()
 
@@ -234,7 +234,7 @@ def main():
     print(Fore.GREEN + f"[✔] Sistema operativo detectado: {os_detectado}\n")
 
     fuzz_results = []
-    if 80 in [p[0] for p in puertos_abiertos if p[1] == "open"] or 443 in [p[0] for p in puertos_abiertos if p[1] == "open"]:
+    if 80 in [p[0] for p in puertos_abiertos if p[1] == "open"] or 443 in [p[0] for p in puertos_abiertos if p[1] == "open"] or 8443 in [p[0] for p in puertos_abiertos if p[1] == "open"]:
         url = f"https://{args.host}" if 443 in [p[0] for p in puertos_abiertos if p[1] == "open"] else f"http://{args.host}"
         try:
             with open(args.wordlist, "r", encoding="ISO-8859-1") as f:
