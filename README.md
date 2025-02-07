@@ -1,103 +1,94 @@
-
 # ScanFuzz
 
-ScanFuzz es una herramienta de escaneo de puertos y fuzzing diseñada para entornos de CTF (Capture The Flag) y pruebas de seguridad. Combina técnicas de escaneo sigiloso (SYN scan) con fuzzing de directorios y subdominios para descubrir puertos abiertos, servicios y rutas ocultas en servidores web.
-
-## Características Principales
-
-### 1. Escaneo Sigiloso de Puertos (SYN Scan)
-🔍 Escanea puertos TCP utilizando la técnica de escaneo SYN (Half-Open Scan), que es más sigilosa que un escaneo completo.
-- Soporta escaneo de un rango de puertos personalizado o una lista específica de puertos.
-- Detecta puertos abiertos y muestra el servicio asociado a cada puerto (si está disponible).
-
-### 2. Fuzzing de Directorios
-💻 Realiza fuzzing de directorios en servidores web para descubrir rutas ocultas o archivos sensibles.
-- Utiliza una lista de palabras (wordlist) para probar múltiples rutas.
-- Soporta múltiples conexiones concurrentes para acelerar el proceso.
-
-### 3. Detección de Sistemas Operativos
-🖥️ Detecta el sistema operativo del host remoto basándose en las respuestas TCP/IP.
-- Analiza el TTL (Time to Live) y el tamaño de la ventana TCP para inferir el sistema operativo.
-
-### 4. Exportación de Resultados
-📊 Guarda los resultados del escaneo y el fuzzing en un archivo JSON para su posterior análisis.
-- Los resultados incluyen puertos abiertos, servicios detectados, rutas descubiertas y el sistema operativo inferido.
-
-### 5. Fácil de Usar
-🛠️ Interfaz de línea de comandos (CLI) intuitiva con opciones personalizables.
-- Soporta colores en la terminal para una mejor visualización de los resultados.
+ScanFuzz es una herramienta avanzada de escaneo de puertos y fuzzing, diseñada para entornos de seguridad informática y competiciones de CTF (Capture The Flag). Su objetivo principal es detectar puertos abiertos, servicios en ejecución y rutas ocultas en servidores web de manera eficiente y sigilosa.
 
 ---
 
-## Instalación
+## 🚀 Características Principales
 
-### Requisitos
-- Python 3.7 o superior.
-- Librerías requeridas: `scapy`, `colorama`, `aiohttp`, `asyncio`.
+### 🔍 Escaneo Sigiloso de Puertos (SYN Scan)
+- Utiliza la técnica de escaneo SYN (Half-Open Scan), más sigilosa que un escaneo TCP completo.
+- Permite escanear un rango personalizado o una lista específica de puertos.
+- Detecta puertos abiertos, cerrados y filtrados.
 
-### Instalación de Dependencias
-Puedes instalar las dependencias necesarias usando pip:
+### 💻 Fuzzing de Directorios
+- Descubre rutas ocultas en servidores web.
+- Soporta listas de palabras personalizadas (wordlist).
+- Usa múltiples conexiones concurrentes para mejorar la velocidad del escaneo.
+
+### 🖥️ Detección de Sistemas Operativos
+- Analiza el TTL (Time to Live) y la ventana TCP para inferir el sistema operativo del host.
+- Distingue entre sistemas Linux, Windows u otros.
+
+### 📊 Exportación de Resultados
+- Guarda los resultados del escaneo en un archivo JSON estructurado.
+- Incluye puertos abiertos, servicios detectados, rutas encontradas y sistema operativo inferido.
+
+---
+
+## 🏗 Instalación
+
+### 📌 Requisitos
+- Python 3.5 o superior.
+- Sistema operativo Linux, macOS o Windows.
+
+### 📥 Instalación de Dependencias
+Clona el repositorio y ejecuta la instalación de dependencias:
 
 ```bash
-pip install scapy colorama aiohttp
-```
-
-### Clonar el Repositorio
-```bash
-git clone https://github.com/tuusuario/scanfuzz.git
+# Clonar el repositorio
+git clone https://github.com/javiipardo/scanfuzz.git
 cd scanfuzz
+
+# Instalar las dependencias
+pip install -r requirements.txt
 ```
 
 ---
 
-## Uso
-
-### Escaneo de Puertos
-Para escanear puertos en un host específico:
+## ⚡ Uso
 
 ```bash
-./scanfuzz.py <host> -p <puertos>
+python scanfuzz.py <host> [opciones]
 ```
 
+### 🌐 Escaneo de Puertos
+```bash
+python scanfuzz.py 192.168.1.1 -p 80,443,8080
+```
 - `<host>`: IP o dominio del objetivo.
-- `-p <puertos>`: Lista de puertos a escanear (por defecto: 80,443,22,21,8080,3306). Usa `-p-` para escanear todos los puertos (1-65535).
+- `-p <puertos>`: Lista de puertos a escanear (por defecto: 80,443,22,21,8080,3306, etc.).
+- `-p -`: Escanea todos los puertos (1-65535).
 
-**Ejemplo:**
-
-```bash
-./scanfuzz.py 192.168.1.1 -p 80,443,8080
-```
-
-### Fuzzing de Directorios
-Si se detecta un servidor web (puerto 80 o 443), la herramienta realiza automáticamente fuzzing de directorios usando una wordlist.
+### 📂 Fuzzing de Directorios
+Si se detecta un servidor web (puerto 80, 443 o 8443), se ejecuta automáticamente el fuzzing:
 
 ```bash
-./scanfuzz.py 192.168.1.1 -p 80 -w wordlist.txt
+python scanfuzz.py 192.168.1.1 -w wordlist.txt
 ```
+- `-w <wordlist>`: Especifica una wordlist personalizada para el fuzzing.
 
-- `-w <wordlist>`: Ruta al archivo de wordlist (por defecto: `wordlist.txt`).
-
-### Detección de Sistemas Operativos
+### 🔎 Detección del Sistema Operativo
 La herramienta detecta automáticamente el sistema operativo del host remoto después del escaneo de puertos.
 
 ---
 
-## Ejemplo de Salida
+## 📜 Ejemplo de Salida
 
-```plaintext
-[*] Escaneando puertos sigilosamente en 192.168.1.1...
+```bash
+[*] Escaneando puertos en 192.168.1.1...
 [+] Puerto abierto: 80 (http)
 [+] Puerto abierto: 443 (https)
-[*] Sistema operativo detectado: Linux (Kernel 2.4/2.6)
+[*] Sistema operativo detectado: Linux
 [*] Fuzzing en http://192.168.1.1
-[+] http://192.168.1.1/admin - Código: 200
-[+] http://192.168.1.1/backup - Código: 403
+[✔] http://192.168.1.1/admin - Código: 200
+[✔] http://192.168.1.1/backup - Código: 403
 [*] Resultados guardados en 192.168.1.1_resultados.json
 ```
 
 ---
 
-## Archivo de Resultados (JSON)
+## 📝 Formato de Resultados (JSON)
 
 Los resultados se guardan en un archivo JSON con el siguiente formato:
 
@@ -109,7 +100,7 @@ Los resultados se guardan en un archivo JSON con el siguiente formato:
     "80": "http",
     "443": "https"
   },
-  "sistema_operativo": "Linux (Kernel 2.4/2.6)",
+  "sistema_operativo": "Linux",
   "fuzzing": [
     {"url": "http://192.168.1.1/admin", "status": 200},
     {"url": "http://192.168.1.1/backup", "status": 403}
@@ -119,4 +110,9 @@ Los resultados se guardan en un archivo JSON con el siguiente formato:
 
 ---
 
-¡Gracias por usar ScanFuzz! 🚀
+## 🔥 Contacto y Contribuciones
+
+- **Autor**: [javiipardo](https://github.com/javiipardo)
+- **Repositorio**: [ScanFuzz en GitHub](https://github.com/javiipardo/scanfuzz)
+
+¡Contribuciones y mejoras son bienvenidas! 🚀
