@@ -49,12 +49,12 @@ pip install -r requirements.txt
 ## ⚡ Uso
 
 ```bash
-python scanfuzz.py <host> [opciones]
+python3 scanfuzz.py <host> [opciones]
 ```
 
 ### 🌐 Escaneo de Puertos
 ```bash
-python scanfuzz.py 192.168.1.1 -p 80,443,8080
+python3 scanfuzz.py 192.168.1.1 -p 80,443,8080
 ```
 - `<host>`: IP o dominio del objetivo.
 - `-p <puertos>`: Lista de puertos a escanear (por defecto: 80,443,22,21,8080,3306, etc.).
@@ -64,7 +64,7 @@ python scanfuzz.py 192.168.1.1 -p 80,443,8080
 Si se detecta un servidor web (puerto 80, 443 o 8443), se ejecuta automáticamente el fuzzing:
 
 ```bash
-python scanfuzz.py 192.168.1.1 -w wordlist.txt
+python3 scanfuzz.py 192.168.1.1 -w wordlist.txt
 ```
 - `-w <wordlist>`: Especifica una wordlist personalizada para el fuzzing.
 
