@@ -10,10 +10,9 @@ ScanFuzz es una herramienta avanzada de escaneo de puertos y fuzzing, diseñada 
 - Utiliza la técnica de escaneo SYN (Half-Open Scan), más sigilosa que un escaneo TCP completo.
 - Permite escanear un rango personalizado o una lista específica de puertos.
 - Detecta puertos abiertos, cerrados y filtrados.
-- Identifica el servicio asociado a cada puerto cuando es posible.
 
 ### 💻 Fuzzing de Directorios
-- Descubre rutas ocultas y archivos sensibles en servidores web.
+- Descubre rutas ocultas en servidores web.
 - Soporta listas de palabras personalizadas (wordlist).
 - Usa múltiples conexiones concurrentes para mejorar la velocidad del escaneo.
 
@@ -25,17 +24,12 @@ ScanFuzz es una herramienta avanzada de escaneo de puertos y fuzzing, diseñada 
 - Guarda los resultados del escaneo en un archivo JSON estructurado.
 - Incluye puertos abiertos, servicios detectados, rutas encontradas y sistema operativo inferido.
 
-### 🛠️ Fácil de Usar
-- Interfaz de línea de comandos (CLI) intuitiva y personalizable.
-- Soporta colores en la terminal para mejorar la visualización de los resultados.
-- Manejo de señales para detener el escaneo de forma ordenada.
-
 ---
 
 ## 🏗 Instalación
 
 ### 📌 Requisitos
-- Python 3.7 o superior.
+- Python 3.5 o superior.
 - Sistema operativo Linux, macOS o Windows.
 
 ### 📥 Instalación de Dependencias
