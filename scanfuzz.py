@@ -207,7 +207,7 @@ def main():
     parser.add_argument("--open", action="store_true", help="Mostrar solo puertos abiertos")
     parser.add_argument("--closed", action="store_true", help="Mostrar solo puertos cerrados")
     parser.add_argument("--filtered", action="store_true", help="Mostrar solo puertos filtrados")
-    parser.add_argument("-w", "--wordlist", type=str, default="rockyou.txt", help="Lista de palabras para fuzzing")
+    parser.add_argument("-w", "--wordlist", type=str, help="Lista de palabras para fuzzing")
     parser.add_argument("--status-code", type=int, help="Filtrar fuzzing por código de respuesta HTTP")
     parser.add_argument("-t", "--threads", type=int, default=5, help="Número máximo de hilos para el escaneo (máximo 10)", choices=range(1, 11))
     parser.add_argument("-b", "--block-size", type=int, default=100, help="Tamaño del bloque para procesar la wordlist")
