@@ -1,5 +1,5 @@
-scapy==2.4.5
-argparse==1.4.0
-colorama==0.4.6
-aiohttp==3.8.5
-asyncio==3.4.3
+scapy>=2.4
+argparse>=1.4
+colorama>=0.4
+aiohttp>=3.8
+asyncio>=3.4

@@ -1,5 +1,18 @@
 #!/usr/bin/env python3
 
+"""
+ScanFuzz v1.0
+
+Escáner de puertos sigiloso y fuzzing de directorios diseñado para CTFs y pruebas de penetración.
+Desarrollado por javiipardo en GitHub: https://github.com/javiipardo
+
+Funciones principales:
+- Escaneo sigiloso de puertos con SYN (Half-Open Scan)
+- Detección del sistema operativo a partir del TTL de respuestas TCP
+- Fuzzing de directorios y recursos web utilizando una wordlist
+- Almacenamiento de resultados en formato JSON
+"""
+
 from scapy.all import IP, TCP, sr1
 import argparse
 import socket
@@ -13,28 +26,24 @@ import signal
 import sys
 import threading
 
-# Inicializar colorama
 init(autoreset=True)
 
-# Evento global para detener tareas
 stop_event = threading.Event()
 
-# Configurar un manejador global de excepciones para hilos que registre todas las excepciones.
 def custom_thread_exception_handler(args):
     print(Fore.RED + f"[x] Excepción en hilo: {args.exc_type}, {args.exc_value}")
 
 threading.excepthook = custom_thread_exception_handler
 
-# Variables globales para el temporizador
 start_time = time.time()
 
-# Función para calcular el tiempo transcurrido
 def tiempo_transcurrido():
+    """Calcula el tiempo transcurrido desde que inició el escaneo."""
     elapsed = time.time() - start_time
     return f"[Tiempo: {elapsed:.2f}s]"
 
-# Validar puertos de entrada
 def validar_puertos(puertos):
+    """Valida y convierte una lista de puertos proporcionada como cadena en una lista de enteros."""
     try:
         puertos_list = [int(p) for p in puertos.split(",")]
         for puerto in puertos_list:
@@ -45,51 +54,8 @@ def validar_puertos(puertos):
         print(Fore.RED + f"[x] Error: {e}")
         sys.exit(1)
 
-# Escaneo sigiloso con SYN (Half-Open Scan)
-def escanear_puerto_syn(host, puerto, timeout=1, delay=0):
-    try:
-        if stop_event.is_set():
-            return None
-        time.sleep(delay)
-        paquete = IP(dst=host) / TCP(dport=puerto, flags="S")
-        respuesta = sr1(paquete, timeout=timeout, verbose=0)
-        if respuesta and respuesta.haslayer(TCP):
-            if respuesta.getlayer(TCP).flags == 0x12:
-                return puerto, "open"
-            elif respuesta.getlayer(TCP).flags == 0x14:
-                return puerto, "closed"
-        return puerto, "filtered"
-    except Exception as e:
-        print(Fore.RED + f"[x] Error al escanear el puerto {puerto}: {e}")
-    return puerto, "error"
-
-# Detección del sistema operativo (usando el TTL de la respuesta en el puerto 80)
-def obtener_os(host):
-    try:
-        paquete = IP(dst=host) / TCP(dport=80, flags="S")
-        respuesta = sr1(paquete, timeout=2, verbose=0)
-        if respuesta and respuesta.haslayer(TCP):
-            ttl = respuesta[IP].ttl
-            if ttl <= 64:
-                return "Linux"
-            elif ttl <= 128:
-                return "Windows"
-            else:
-                return "Desconocido"
-        return "No se pudo detectar el OS"
-    except Exception as e:
-        print(Fore.RED + f"[x] Error al detectar el sistema operativo: {e}")
-        return "Desconocido"
-
-# Obtener el servicio asociado a un puerto
-def obtener_servicio(puerto):
-    try:
-        return socket.getservbyport(puerto)
-    except OSError:
-        return "Desconocido"
-
-# Escaneo de puertos con control de hilos y cierre ordenado
 def escanear_puertos_syn(host, puertos, max_threads=10, delay=0, filtro=None):
+    """Escanea múltiples puertos en paralelo usando SYN scan."""
     print(Fore.GREEN + "[!] Iniciando escaneo de puertos sigiloso...\n")
     resultados = []
     with ThreadPoolExecutor(max_workers=max_threads) as executor:
@@ -117,8 +83,51 @@ def escanear_puertos_syn(host, puertos, max_threads=10, delay=0, filtro=None):
     print(Fore.CYAN + tiempo_transcurrido() + "\n")
     return resultados
 
-# Fuzzing asíncrono de directorios con verificación del stop_event
+def escanear_puerto_syn(host, puerto, timeout=1, delay=0):
+    """Realiza un escaneo SYN (Half-Open Scan) en un puerto específico."""
+    try:
+        if stop_event.is_set():
+            return None
+        time.sleep(delay)
+        paquete = IP(dst=host) / TCP(dport=puerto, flags="S")
+        respuesta = sr1(paquete, timeout=timeout, verbose=0)
+        if respuesta and respuesta.haslayer(TCP):
+            if respuesta.getlayer(TCP).flags == 0x12:
+                return puerto, "open"
+            elif respuesta.getlayer(TCP).flags == 0x14:
+                return puerto, "closed"
+        return puerto, "filtered"
+    except Exception as e:
+        print(Fore.RED + f"[x] Error al escanear el puerto {puerto}: {e}")
+    return puerto, "error"
+
+def obtener_os(host):
+    """Intenta detectar el sistema operativo basado en el TTL de la respuesta TCP en el puerto 80."""
+    try:
+        paquete = IP(dst=host) / TCP(dport=80, flags="S")
+        respuesta = sr1(paquete, timeout=2, verbose=0)
+        if respuesta and respuesta.haslayer(TCP):
+            ttl = respuesta[IP].ttl
+            if ttl <= 64:
+                return "Linux"
+            elif ttl <= 128:
+                return "Windows"
+            else:
+                return "Desconocido"
+        return "No se pudo detectar el OS"
+    except Exception as e:
+        print(Fore.RED + f"[x] Error al detectar el sistema operativo: {e}")
+        return "Desconocido"
+
+def obtener_servicio(puerto):
+    """Obtiene el nombre del servicio asociado a un puerto específico."""
+    try:
+        return socket.getservbyport(puerto)
+    except OSError:
+        return "Desconocido"
+
 async def fuzzear_directorio(session, url, palabra, delay=0, timeout=5, filtro=None):
+    """Realiza una petición HTTP a una URL construida con una palabra clave de la wordlist."""
     if stop_event.is_set():
         return None
     if not palabra or palabra.startswith("#"):
@@ -138,6 +147,7 @@ async def fuzzear_directorio(session, url, palabra, delay=0, timeout=5, filtro=N
     return None
 
 async def fuzzing(url, wordlist, max_concurrent=20, delay=0, block_size=100, filtro=None):
+    """Realiza fuzzing de directorios y recursos web en paralelo utilizando una wordlist."""
     print(Fore.GREEN + "[!] Iniciando fuzzing de directorios...\n")
     encontrados = []
     connector = aiohttp.TCPConnector(limit_per_host=max_concurrent)
@@ -155,8 +165,8 @@ async def fuzzing(url, wordlist, max_concurrent=20, delay=0, block_size=100, fil
     print(Fore.CYAN + tiempo_transcurrido() + "\n")
     return encontrados
 
-# Guardar resultados en un archivo JSON
 def guardar_resultados(host, puertos_abiertos, fuzz_results):
+    """Guarda los resultados del escaneo en un archivo JSON."""
     try:
         data = {
             "host": host,
@@ -169,16 +179,16 @@ def guardar_resultados(host, puertos_abiertos, fuzz_results):
     except Exception as e:
         print(Fore.RED + f"[x] Error al guardar los resultados: {e}\n")
 
-# Manejar la señal de interrupción (Ctrl+C) de forma silenciosa
 def signal_handler(sig, frame):
+    """Maneja la interrupción de Ctrl+C y detiene el escaneo."""   
     stop_event.set()
     print(Fore.RED + "[x] Escaneo detenido por el usuario.\n")
     sys.exit(0)
 
 signal.signal(signal.SIGINT, signal_handler)
 
-# Función principal
 def main():
+    """Función principal que coordina el escaneo de puertos y el fuzzing."""
     print(Fore.CYAN + """
     ==========================================
     |            ScanFuzz v1.0               |
@@ -227,11 +237,11 @@ def main():
     elif args.filtered:
         filtro_puertos = "filtered"
 
-    puertos_abiertos = escanear_puertos_syn(args.host, args.puertos, max_threads=args.threads,
-                                             delay=computed_delay, filtro=filtro_puertos)
-
     os_detectado = obtener_os(args.host)
     print(Fore.GREEN + f"[✔] Sistema operativo detectado: {os_detectado}\n")
+
+    puertos_abiertos = escanear_puertos_syn(args.host, args.puertos, max_threads=args.threads,
+                                             delay=computed_delay, filtro=filtro_puertos)
 
     fuzz_results = []
     if 80 in [p[0] for p in puertos_abiertos if p[1] == "open"] or 443 in [p[0] for p in puertos_abiertos if p[1] == "open"] or 8443 in [p[0] for p in puertos_abiertos if p[1] == "open"]:
@@ -243,8 +253,10 @@ def main():
                                                 delay=computed_delay, block_size=args.block_size, filtro=args.status_code))
         except FileNotFoundError:
             print(Fore.RED + "[x] No se encontró el archivo de wordlist.\n")
+            
 
     guardar_resultados(args.host, puertos_abiertos, fuzz_results)
 
 if __name__ == "__main__":
     main()
+    
