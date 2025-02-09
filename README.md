@@ -72,14 +72,26 @@ La herramienta detecta automáticamente el sistema operativo del host remoto des
 ## 📜 Ejemplo de Salida
 
 ```bash
-[*] Escaneando puertos en 192.168.1.1...
-[+] Puerto abierto: 80 (http)
-[+] Puerto abierto: 443 (https)
-[*] Sistema operativo detectado: Linux
-[*] Fuzzing en http://192.168.1.1
-[✔] http://192.168.1.1/admin - Código: 200
-[✔] http://192.168.1.1/backup - Código: 403
-[*] Resultados guardados en 192.168.1.1_resultados.json
+    ==========================================
+    |            ScanFuzz v1.0               |
+    |  Desarrollado por javiipardo en GitHub |
+    |  https://github.com/javiipardo         |
+    ==========================================
+    
+[✔] Sistema operativo detectado: Linux
+
+[!] Iniciando escaneo de puertos sigiloso...
+
+[✔] Puerto abierto: 80 (http)
+
+[✔] Escaneo de puertos completado.
+[Tiempo: 0.37s]
+
+[!] Iniciando fuzzing de directorios...
+
+[✔] http://172.17.0.2/uploads - Código: 20
+
+[!] Resultados guardados en 192.168.1.1_resultados.json
 ```
 
 ---
