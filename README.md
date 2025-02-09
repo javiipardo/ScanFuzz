@@ -28,10 +28,6 @@ ScanFuzz es una herramienta avanzada de escaneo de puertos y fuzzing, diseñada 
 
 ## 🏗 Instalación
 
-### 📌 Requisitos
-- Python 3.5 o superior.
-- Sistema operativo Linux, macOS o Windows.
-
 ### 📥 Instalación de Dependencias
 Clona el repositorio y ejecuta la instalación de dependencias:
 
@@ -115,4 +111,3 @@ Los resultados se guardan en un archivo JSON con el siguiente formato:
 - **Autor**: [javiipardo](https://github.com/javiipardo)
 - **Repositorio**: [ScanFuzz en GitHub](https://github.com/javiipardo/scanfuzz)
 
-¡Contribuciones y mejoras son bienvenidas! 🚀
